@@ -125,16 +125,20 @@
   order: 3;
 }
 
-/* short SHA: plain muted 12px mono text, 7 characters like github.com (line-height differs: see below) */
+/* short SHA: plain muted 12px mono text (line-height differs: see below). Signed commits also contain
+   the verification icon and signing avatar, so only unsigned links can be clipped to seven characters. */
 :is(#repo-files-table .repo-file-last-commit, #repo-file-commit-box) .ui.label.commit-id-short {
   order: 4;
   height: auto;
-  max-width: 7ch;
   padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent; /* also beats Gitea's label :hover background */
   color: var(--fgColor-muted);
+}
+
+:is(#repo-files-table .repo-file-last-commit, #repo-file-commit-box) .ui.label.commit-id-short:not(.commit-is-signed) {
+  max-width: 7ch;
 }
 
 #repo-files-table .repo-file-last-commit .ui.label.commit-id-short {

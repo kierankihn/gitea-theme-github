@@ -18,8 +18,10 @@ specific to a developer's OS. The reference commit stays fixed until an intentio
 reviewed; it is not automatically replaced by the PR base or by the candidate.
 
 Coverage includes repository home, issue list, issue conversation, PR conversation, unified/split
-diffs, comment menus, reaction pickers and the inline reply editor. Menu checks also hit-test every
-item (including the last one), so clipping/stacking failures cannot pass merely because an element
+diffs, comment menus, reaction pickers and the inline reply editor. Signature checks inject Gitea's signed
+badge markup into the API fixture's unsigned commits on repository, file and commit-list pages. They check
+all four verification states, hover colours and clipping, and attach screenshots of trusted signatures.
+Menu checks also hit-test every item (including the last one), so clipping/stacking failures cannot pass merely because an element
 exists in the DOM. Mobile split diffs check horizontal scroll restoration after the dropdown closes.
 
 ## Run locally

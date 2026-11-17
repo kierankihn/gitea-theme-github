@@ -236,6 +236,23 @@ a.ui.blue.label:hover {
   border-radius: 0;
 }
 
+/* Preserve the verification state without colouring the SHA or the signing user's avatar. */
+.commit-sign-badge.sign-trusted {
+  color: var(--fgColor-success);
+}
+
+.commit-sign-badge.sign-untrusted {
+  color: var(--fgColor-attention);
+}
+
+.commit-sign-badge.sign-unmatched {
+  color: var(--fgColor-severe);
+}
+
+.commit-sign-badge.sign-warning {
+  color: var(--fgColor-danger);
+}
+
 /* icons D-4: no "unsigned" badge on the commit page (github.com only badges signed commits) */
 .commit-sign-badge:not(.commit-is-signed) {
   display: none;

@@ -94,6 +94,68 @@ for (const [name, route] of [
   });
 }
 
+// The API fixture creates unsigned commits. Exercise Gitea's signed badge markup on the real page CSS too.
+for (const [name, route, selector] of [
+  ['repository', '', '#repo-files-table .commit-id-short'],
+  ['file', '/src/branch/main/src/colors.go', '#repo-file-commit-box .commit-id-short'],
+  ['commits', '/commits/branch/main', '#commits-table .commit-id-short'],
+]) {
+  test(`${name} commit signatures`, async ({page}, testInfo) => {
+    await open(page, state.candidate.url + state.repo + route);
+    const link = page.locator(selector).first();
+    // Gitea intentionally hides these SHA links on mobile.
+    if (!(await link.isVisible())) {
+      expect(page.viewportSize().width).toBe(390);
+      return;
+    }
+    const original = await link.innerHTML();
+    const href = await link.getAttribute('href');
+    const avatar = await page.locator('img.avatar').first().evaluate((el) => {
+      const image = el.cloneNode();
+      image.width = image.height = 20; // repo/commit_sign_badge.tmpl's signing avatar size.
+      return image.outerHTML;
+    });
+    const colors = [];
+    for (const status of ['trusted', 'untrusted', 'unmatched', 'warning']) {
+      const icon = fs.readFileSync(new URL(`../../src/icons/svg/gitea-${status === 'warning' ? 'unlock' : 'lock'}.svg`, import.meta.url), 'utf8');
+      await link.evaluate((el, {status, original, icon, avatar}) => {
+        el.classList.add('commit-is-signed', `sign-${status}`);
+        const badge = document.createElement('span');
+        badge.className = `ui label commit-sign-badge commit-is-signed sign-${status}`;
+        badge.innerHTML = `<span data-tooltip-content="Signature reason">${icon}</span>`
+          + (status === 'warning' ? '' : `<span data-tooltip-content="Signing key">${avatar}</span>`);
+        badge.querySelector('svg').setAttribute('class', `svg gitea-${status === 'warning' ? 'unlock' : 'lock'}`);
+        el.innerHTML = original;
+        el.append(badge);
+      }, {status, original, icon, avatar});
+      const badge = link.locator('.commit-sign-badge');
+      const color = await badge.evaluate((el) => getComputedStyle(el).color);
+      colors.push(color);
+      for (const hover of [false, true]) {
+        if (hover) await link.hover();
+        const geometry = await link.evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          const text = document.createRange();
+          text.selectNodeContents(el.firstChild);
+          const parts = [text.getBoundingClientRect(), ...Array.from(el.querySelectorAll('.commit-sign-badge, .commit-sign-badge > *, .commit-sign-badge svg, .commit-sign-badge img'), (child) => child.getBoundingClientRect())];
+          const css = getComputedStyle(el);
+          return {border: css.borderTopWidth, background: css.backgroundColor,
+            clipped: parts.some((p) => p.left < r.left - 1 || p.right > r.right + 1 || p.top < r.top - 1 || p.bottom > r.bottom + 1)};
+        });
+        expect(geometry).toEqual({border: '0px', background: 'rgba(0, 0, 0, 0)', clipped: false});
+        await expect(badge).toHaveCSS('color', color);
+        await expect(link).toHaveAttribute('href', href);
+        await expect(badge.locator('[data-tooltip-content]').first()).toHaveAttribute('data-tooltip-content', 'Signature reason');
+      }
+      if (status === 'trusted') await testInfo.attach('trusted-signature.png', {body: await page.screenshot(), contentType: 'image/png'});
+      await page.mouse.move(0, 0);
+      await link.evaluate((el, status) => el.classList.remove('commit-is-signed', `sign-${status}`), status);
+    }
+    expect(new Set(colors).size, 'Verification states must remain distinguishable').toBe(4);
+    await link.evaluate((el, original) => { el.innerHTML = original; }, original);
+  });
+}
+
 for (const view of ['conversation', 'unified', 'split']) {
   test(`PR ${view} menus`, async ({page, reference}, testInfo) => {
     const suffix = `/pulls/2${view === 'conversation' ? '' : `/files?style=${view}`}`;
