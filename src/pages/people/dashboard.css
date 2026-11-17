@@ -135,23 +135,14 @@
   z-index: 1;
 }
 
-/* All / Sources / Forks / Mirrors / Collaborative: a compact UnderlineNav */
+/* Match the dashboard's simple repository list: search followed directly by repository rows. */
 .repos-filter {
-  min-height: var(--base-size-40);
+  display: none;
 }
 
-.repos-filter .overflow-menu-items {
-  gap: 0;
-}
-
-.repos-filter .item,
 .repo-owner-name-list > li > .tw-text-grey-light {
   gap: var(--base-size-4);
   font-size: var(--text-body-size-small);
-}
-
-.repos-filter .active::after {
-  bottom: calc(50% - var(--base-size-20));
 }
 
 /* repo rows */
@@ -166,6 +157,11 @@
 .repo-list-link {
   gap: var(--base-size-8);
   font-weight: var(--base-text-weight-semibold);
+}
+
+/* GitHub sidebar rows: 20px text line plus 6px padding above and below (people.important.css). */
+.dashboard-repos .repo-list-link {
+  line-height: var(--base-size-20);
 }
 
 .repo-list-link:hover {

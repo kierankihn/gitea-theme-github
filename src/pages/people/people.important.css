@@ -92,14 +92,15 @@
   margin-top: 0 !important;
 }
 
-/* dashboard repo list (DashboardRepoList.vue scoped rules with !important) */
-#dashboard-repo-list .repos-filter .item {
-  padding: 0 var(--base-size-6) !important;
-}
-
+/* DashboardRepoList.vue rows carry Tailwind tw-py-2 (!important). */
 #dashboard-repo-list .repo-owner-name-list > li {
   padding-top: var(--base-size-4) !important;
   padding-bottom: var(--base-size-4) !important;
+}
+
+#dashboard-repo-list .dashboard-repos .repo-owner-name-list > li {
+  padding-top: var(--base-size-6) !important;
+  padding-bottom: var(--base-size-6) !important;
 }
 
 /* dashboard feed: the event octicon carries tw-mr-1 */

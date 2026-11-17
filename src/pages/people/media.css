@@ -371,17 +371,17 @@
      its top (padding) and the list pulls itself into it (negative margin, fixed height), so the feed (parsed and
      painted first) does not move. Once the rows exist (or the Organizations tab is shown) the list takes its natural
      height in the flow: every row is visible, no nested scroller; the feed moves only by the difference between the
-     reservation (445px: tabs, heading, search, filter and 8 rows) and the real list: 0 for 8 rows, one row (29px) per
+     reservation (429px: tabs, heading, search and 8 rows) and the real list: 0 for 8 rows, one row (32px) per
      row more or less; Gitea pages the list at 15 rows. */
   .feeds > .flex-container {
-    padding-top: calc(var(--base-size-128) * 3 + var(--base-size-64) - var(--base-size-2) - var(--borderWidth-thin));
+    padding-top: calc(var(--base-size-128) * 3 + var(--base-size-48) - var(--base-size-2) - var(--borderWidth-thin));
     padding-left: 0;
   }
 
   .feeds .flex-container-sidebar {
     width: auto;
-    height: calc(var(--base-size-128) * 3 + var(--base-size-64) - var(--base-size-2) - var(--borderWidth-thin));
-    margin: calc((var(--base-size-128) * 3 + var(--base-size-64) - var(--base-size-2) - var(--borderWidth-thin)) * -1) 0 0;
+    height: calc(var(--base-size-128) * 3 + var(--base-size-48) - var(--base-size-2) - var(--borderWidth-thin));
+    margin: calc((var(--base-size-128) * 3 + var(--base-size-48) - var(--base-size-2) - var(--borderWidth-thin)) * -1) 0 0;
     overflow: hidden;
     border-right: 0;
     border-bottom: var(--borderWidth-thin) solid var(--borderColor-muted);
